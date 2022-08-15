@@ -22,6 +22,9 @@ const produitDisplay = async () => {
 
   let Price = document.getElementById("price");
   Price.innerHTML+=`${produitData.price}`;
+
+   let descr = document.getElementById("description");
+   descr.innerHTML += `${produitData.description}`;
 };
 
 
