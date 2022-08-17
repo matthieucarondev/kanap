@@ -68,16 +68,24 @@ const addBasket = () => {
     console.log(selects.value);
     console.log(produitTableau);
 
-const fusionProduitColor= Object.assign({} ,produitData,{
+const fusionProduit= Object.assign({} ,produitData,{
 color : `${selects.value}`,
 quantité: `${quantity.value}`,
 });
+console.log(fusionProduit);
 
     if(produitTableau==null) {
       produitTableau = [];
       produitTableau.push(produitData);
       console.log(produitTableau);
       localStorage.setItem("produit",JSON.stringify(produitTableau));
+    } else if (produitTableau != null ){
+      for (i=0; i< produitTableau.length; i++){
+        console.log("test");
+        if(produitTableau[i]._id== produitData._id && produitTableau[i].color == selects.value ){
+
+        }
+      }
     }
   });
   return (produitTableau = JSON.parse(localStorage.getItem("produit")));
