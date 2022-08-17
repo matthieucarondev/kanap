@@ -1,3 +1,5 @@
+
+
 const produit = window.location.search.split("?card").join("");
 console.log(produit);
 
@@ -20,6 +22,10 @@ const produitDisplay = async () => {
  document.getElementById("Button").innerHTML = ` 
  <button id="${produitData._id}" >Ajouter au panier</button>`;
 
+ document.getElementById("quant").innerHTML = ` 
+  <label for="itemQuantity">Nombre d'article(s) (1-100) :</label>
+ <input type="number" name="itemQuantity" min="1" max="100" value="0" id="quantity">`;
+
   let H1 = document.getElementById("title");
   H1.innerHTML += `${produitData.name}`;
 
@@ -40,6 +46,12 @@ const produitDisplay = async () => {
     tagOption.value = `${color}`;
 
     select.appendChild(tagOption);
+
+    const quantityProduit = document.getElementById("quantity");
+    console.log("quantityProduit");
+    console.log(quantityProduit);
+    const choixQuantity =quantityProduit.value;
+
   });
   addBasket(produitData);
 };
@@ -49,8 +61,24 @@ const addBasket = () => {
   let bouton = document.getElementById(produitData._id);
   console.log(bouton);
   bouton.addEventListener("click", () => {
+    let produitTableau = JSON.parse(localStorage.getItem("produit"))
     let selects = document.getElementById("colors");
-    console.log(selects);
+    let quantity = document.getElementById("quantity");
+    console.log(quantity.value);
+    console.log(selects.value);
+    console.log(produitTableau);
 
+const fusionProduitColor= Object.assign({} ,produitData,{
+color : `${selects.value}`,
+quantité: `${quantity.value}`,
+});
+
+    if(produitTableau==null) {
+      produitTableau = [];
+      produitTableau.push(produitData);
+      console.log(produitTableau);
+      localStorage.setItem("produit",JSON.stringify(produitTableau));
+    }
   });
+  return (produitTableau = JSON.parse(localStorage.getItem("produit")));
 };
