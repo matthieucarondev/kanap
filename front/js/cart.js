@@ -1,13 +1,12 @@
-
 let addProduit = JSON.parse(localStorage.getItem("produit"));
 console.log(addProduit);
 console.log("addProduit");
 
 const panierDisplay = async () => {
-    if(addProduit){
-        await addProduit;
-        console.log(addProduit);
-    };
+  if (addProduit) {
+    await addProduit;
+    console.log(addProduit);
+  }
   cart__items.innerHTML = addProduit.map(
     (produit) =>
       `
@@ -29,8 +28,8 @@ const panierDisplay = async () => {
                     <div class="cart__item__content__settings__delete">
                       <p class="deleteItem">Supprimer</p>
                     </div>
-`
+`,
   );
 };
 panierDisplay();
-   // await fetch
+// await fetch

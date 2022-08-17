@@ -1,7 +1,9 @@
 /*********/
 /*GENERAL*/
 /*********/
-
+.column{
+	flex-direction: column;
+}
 body {
 	font-family: 'Montserrat', sans-serif;
 	margin: 0;
