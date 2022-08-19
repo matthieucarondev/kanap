@@ -1,41 +1,27 @@
-let meubledata = [];
 
-const fetchMeuble = async () => {
-  await fetch("http://localhost:3000/api/products")
-    .then((res) => res.json())
-    .then((promisse) => {
-      meubledata = promisse;
-      console.log(meubledata);
-    });
-};
+const url = "http://localhost:3000/api/products";
 
-const meubleDisplay = async () => {
-  await fetchMeuble();
+fetch(url)
+ .then ((reponse) => reponse.json()
+ .then((data) => {
+        const parser = new DOMParser();
+        const items = document.getElementById('items');
+ 
 
-  document.getElementById("items").innerHTML = meubledata
-    .map(
-      (meuble) => `
-    <a id="card${meuble._id}" class="Liens" >
-  <article >
-  <img src="${meuble.imageUrl}" alt="${meuble.altTxt}"/>
-   <h3 class="productName">${meuble.name.toUpperCase()}</h3>
-    <p class="productDescription">${meuble.description}</p>
-  </article>
-  </a>
-  `
-    )
-    .join("");
+ for (i = 0; i < data.length; i ++) {
+            let produitItems = 
+          `<a href="./product.html?id=${data[i]._id}">
+                    <article>
+                        <img src="${data[i].imageUrl}" alt="${data[i].altTxt}" />
+                        <h3 class="productName">${data[i].name}</h3>
+                        <p class="productDescription">${data[i].description}</p>
+                    </article>
+                </a>`;
+                 const cartItems = parser.parseFromString(produitItems, "text/html");
+                  items.appendChild(cartItems.body.firstChild);
+    
+  }}))
+  .catch((err) => 
+        document.getElementById('items').innerText = `Oups ! Il y a eu une erreur lors de l'affichage des produits :(`);
 
-  let liens = document.querySelectorAll(".Liens");
-  console.log(liens);
-
-  liens.forEach((lien) =>
-    lien.addEventListener("click", () => {
-      console.log(lien);
-
-      window.location = `product.html?${lien.id}`;
-    })
-  );
-};
-
-meubleDisplay();
+  
