@@ -1,15 +1,17 @@
-let url = "http://localhost:3000/api/products";
+const url = "http://localhost:3000/api/products";
+const items = document.getElementById('items');
+
 async function homeProduit()  {
   try {
-  let response = await fetch(url);
-  let data = await response.json()
+  const response = await fetch(url);
+  const data = await response.json()
 
         const dom = new DOMParser();
-        const items = document.getElementById('items');
+        
  
 
  for (i = 0; i < data.length; i ++) {
-            let produitItems = 
+           const produitItems = 
           `<a href="./product.html?id=${data[i]._id}">
                     <article>
                         <img src="${data[i].imageUrl}" alt="${data[i].altTxt}" />
@@ -21,6 +23,6 @@ async function homeProduit()  {
                   items.appendChild(cartItems.body.firstChild);
  }
      }catch(err) {
-        document.getElementById('items').innerText = `Oups ! Il y a eu une erreur lors de l'affichage des produits :(`;}
+        items.innerText = `Oups ! Il y a eu une erreur lors de l'affichage des produits :(`;}
      }
 homeProduit();

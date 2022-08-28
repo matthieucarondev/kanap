@@ -1,96 +1,93 @@
 const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
 const id = urlParams.get("id")
-if (id != null) {
-  let itemPrice = 0
-  let imgUrl, altText, articleName
-}
+const urlApi =`http://localhost:3000/api/products/`+ id ;
+
 //recupére api
-fetch(`http://localhost:3000/api/products/${id}`)
-  .then((response) => response.json())
-  .then((res) => handleData(res))
-
-function handleData(duck) {
-  const { altTxt, colors, description, imageUrl, name, price } = duck
-  itemPrice = price
-  imgUrl = imageUrl
-  altText = altTxt
-  articleName = name
-  makeImage(imageUrl, altTxt)
-  makeTitle(name)
-  makePrice(price)
-  makeDescription(description)
-  makeColors(colors)
-}
-//afficher image
-function makeImage(imageUrl, altTxt) {
-  const image = document.createElement("img")
-  image.src = imageUrl
-  image.alt = altTxt
-  const parent = document.querySelector(".item__img")
-  if (parent != null) parent.appendChild(image)
-}
-//afficher title
-function makeTitle(name) {
-  const h1 = document.querySelector("#title")
-  if (h1 != null) h1.textContent = name
-}
+fetch(urlApi)
+  .then((response) => response.json()
+  .then((data) => {
+    //afficher image
+    let img = document.querySelector(".item__img");
+    img.innerHTML=`<img src="${data.imageUrl}" alt="${data.altTxt}">`;
+  //afficher title
+    let h1 = document.querySelector("#title");
+    h1.innerHTML=`${data.name}`;
 //afficher prix
-function makePrice(price) {
-  const span = document.querySelector("#price")
-  if (span != null) span.textContent = price
-}
+let price= document.querySelector("#price");
+price.innerHTML=`${data.price}`;
 //afficher description
-function makeDescription(description) {
-  const p = document.querySelector("#description")
-  if (p != null) p.textContent = description
-}
+ let descr = document.querySelector("#description")
+descr.innerHTML=`${data.description}`;
 //selectionner couleur
-function makeColors(colors) {
-  const select = document.querySelector("#colors")
-  if (select != null) {
-    colors.forEach((color) => {
-      const option = document.createElement("option")
-      option.value = color
-      option.textContent = color
-      select.appendChild(option)
-    })
-  }
+let parse = new DOMParser();
+let colors = document.querySelector("#colors");
+for (i = 0; i < data.colors.length; i++) {
+  let selectColors=
+   `<option value='${data.colors[i]}'>${data.colors[i]}</option>`;
+          const displayColors = parse.parseFromString(selectColors, "text/html");
+            colors.appendChild(displayColors.body.firstChild);
 }
-// boutton 
-const button = document.querySelector("#addToCart")
-button.addEventListener("click", handleClick)
+}))
+// Récuperer la couleur choisie
+function colorValue() {
+    let color = document.querySelector(`#colors`);
+    return color.value;
+};
 
-function handleClick() {
-  const color = document.querySelector("#colors").value
-  const quantity = document.querySelector("#quantity").value
 
-  if (isOrderInvalid(color, quantity)) return
-  saveOrder(color, quantity)
-  redirectToCart()
-}
-//enregistré localstorage
 
-function saveOrder(color, quantity) {
-  const key = `${id}-${color}`
-  const data = {
-    id: id,
-    color: color,
-    quantity: Number(quantity),
-    price: itemPrice,
-    imageUrl: imgUrl,
-    altTxt: altText,
-    name: articleName
-  }
-  localStorage.setItem(key, JSON.stringify(data))
+
+
+const addToCartElement = (id, color, qty) => {
+if (color == null || color === "" || qty == null || qty == 0 ||  qty > 100 ) {
+  return  alert("Veuillez sélectionner une  couleur et une quantité compris entre 1 et 100");}
+ //récupérer local storage
+//let LS = localStorage.getitem("cart");
+const addCart= () => {   
+    let LS = [];
+    if (localStorage.getItem(`cart`) != null) { 
+        LS = JSON.parse(localStorage.getItem(`cart`));
+    }
+    return LS;
 }
-//erreur si coulleur ou nombre nul
-function isOrderInvalid(color, quantity) {
-  if (color == null || color === "" || quantity == null || quantity == 0) {
-    alert("Please select a color and quantity")
-    return true
-  }
-}
-function redirectToCart() {
-  window.location.href = "cart.html"
-}
+let LS=addCart();
+   // si le LS est vide alors.creer un nouveau table et push data dans le tableau
+     if (LS.length==0) {
+       LS=[{id: id, color: color, qty: qty}]
+     //else (si LS n'est pas vide)
+      } else {
+      let found = false;
+       //vérifere si le id de data et color de data deja présent dans le ls --> find
+      for (let i = 0; i < LS.length; i++) {
+                if (id === LS[i].id && color === LS[i].color) {
+                    found = true;
+                    LS[i].qty += qty;}
+       } 
+      
+       // S'ils n'existent pas, créer un nouvel objet item dans le tableau du panier
+            if (found == false) {
+                let Data = {id: id, color: color, qty: qty};
+                LS.push(Data); 
+            }
+          }
+              //enregistré localstorage
+localStorage.setItem('cart', JSON.stringify(LS));
+alert(`Produit(s) ajouté(s) au panier !`);
+          }
+
+
+
+// Récuperer la quantité choisie
+function qtyValue() {
+    let qty = document.querySelector(`#quantity`);
+    return qty.value;
+};
+// Bouton d'ajout au panier
+const addToCart = document.querySelector(`#addToCart`);
+addToCart.addEventListener(`click`, () => {
+    let color = colorValue();
+    let qty = parseInt(qtyValue());
+
+  addToCartElement(id, color, qty);
+});
