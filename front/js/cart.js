@@ -35,8 +35,7 @@ async function displayItem() {
   
   const data = await response.json();
    const dom = new DOMParser();
-   const produitItems = 
-           `<article class="cart__item" data-id="${id}" data-color="${color}">
+   const produitItems = `<article class="cart__item" data-id="${id}" data-color="${color}">
                             <div class="cart__item__img">
                                 <img src="${data.imageUrl}" alt="${data.altTxt}">
                             </div>
@@ -55,7 +54,7 @@ async function displayItem() {
                                     </div>
                                 
                                     <div class="cart__item__content__settings__delete">
-                                        <p class="deleteItem" onclick="deleteItem('${id}', '${color}', '${data.price}','${LS[i].qty}')">Supprimer</p>
+                                        <p class="deleteProduit" onclick="deleteProduit('${id}', '${color}', '${data.price}','${LS[i].qty}')">Supprimer</p>
                                     </div>
                                 </div>
                             </div>
@@ -88,6 +87,7 @@ const changeQty = (id, color, price, newQty) => {
     let qtyNew = parseInt(newQty);
     item.qty= qtyNew;
     localStorage.setItem('cart',JSON.stringify(LS));
+    let oldTotalQty=document.querySelector(`#totalQuantity`).innerHTML;
     //erreur quantity  non compris entre 1 et 100
     if (newQty<=0 || newQty >=101) {    alert(`la quantité d'un produit doit être comprise entre 1 et 100`)  }
 //modifier quantité total
@@ -96,7 +96,7 @@ document.querySelector(`#totalQuantity`).innerHTML = newQtyTotal;
 
  let priceProduit = parseInt(price);
  let oldTotalPrice = parseInt(document.querySelector(`#totalPrice`).innerHTML);
- let newTotalPrice = oldTotalPrice -(priceProduit * previousQty) + (priceProduit* qtyNew);
+ let newTotalPrice = oldTotalPrice -(priceProduit *oldTotalQty) + (priceProduit* qtyNew);
  document.querySelector(`#totalPrice`).innerHTML = newTotalPrice;
 }
 function addQuantityToSettings(id,color,price) {
