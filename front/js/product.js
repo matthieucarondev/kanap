@@ -35,10 +35,6 @@ function colorValue() {
     return color.value;
 };
 
-
-
-
-
 const addToCartElement = (id, color, qty) => {
 if (color == null || color === "" || qty == null || qty == 0 ||  qty > 100 ) {
   return  alert("Veuillez sélectionner une  couleur et une quantité compris entre 1 et 100");}

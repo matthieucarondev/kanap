@@ -1,6 +1,6 @@
 const url = "http://localhost:3000/api/products";
 const items = document.getElementById('items');
-
+//recupérer les fichier avec fetch //
 async function homeProduit()  {
   try {
   const response = await fetch(url);
@@ -9,7 +9,7 @@ async function homeProduit()  {
         const dom = new DOMParser();
         
  
-
+//créer  les  arcticle produit //
  for (i = 0; i < data.length; i ++) {
            const produitItems = 
           `<a href="./product.html?id=${data[i]._id}">

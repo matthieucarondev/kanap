@@ -104,6 +104,7 @@ function addQuantityToSettings(id,color,price) {
   input.addEventListener("input", () =>
    updatePriceAndQuantity(item.id, input.value, item,price)); 
 }
+//suppression de produit //
 const deleteProduit = (id,color,price,qty) =>{
   let LS =addCart();
   for (let i = 0; i < LS.length; i++) {
