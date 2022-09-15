@@ -1,41 +1,38 @@
-let cart= localStorage.getItem('cart');
+let cart = localStorage.getItem("cart");
 const url = "http://localhost:3000/api/products/";
-const addCart= () => {   
-    let LS = [];
-    if (localStorage.getItem(`cart`) != null) { 
-        LS = JSON.parse(localStorage.getItem(`cart`));
-    }
-    return LS;
-}
-// récupérer localstorage
-
+const getCart = () => {
+  let LS = [];
+  if (localStorage.getItem(`cart`) != null) {
+    LS = JSON.parse(localStorage.getItem(`cart`));
+  }
+  return LS;
+};
 //afficher produit
 
 async function displayItem() {
-  let LS= addCart();
+  let LS = getCart();
   let quantityTotal = 0;
-  let priceTotal=0;
- if (cart !=null) {
-  for (let i = 0; i < LS.length; i++) {
-    const id = LS[i].id;
-    const color = LS[i].color;
-    const item = document.querySelector(`#cart__items`);
-    const apiUrl = url +id;
-   const response = await fetch(apiUrl); 
-   if (!response.ok) {
-    let produitErr =`<article class="cart__item">
+  let priceTotal = 0;
+  if (cart != null) {
+    for (let i = 0; i < LS.length; i++) {
+      const id = LS[i].id;
+      const color = LS[i].color;
+      const item = document.querySelector(`#cart__items`);
+      const apiUrl = url + id;
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        let produitErr = `<article class="cart__item">
     <spam>Il y a une erreur avec un produit du panier!</spam> </article>`;
-    const parser = new DOMParser();
-    const displayProduitErr =parser.parseFromString(produitErr,"text/html");
-    item.appendChild(displayProduitErr.body.firstChild);
-  
-  
-  
- } else {
-  
-  const data = await response.json();
-   const dom = new DOMParser();
-   const produitItems = `<article class="cart__item" data-id="${id}" data-color="${color}">
+        const parser = new DOMParser();
+        const displayProduitErr = parser.parseFromString(
+          produitErr,
+          "text/html",
+        );
+        item.appendChild(displayProduitErr.body.firstChild);
+      } else {
+        const data = await response.json();
+        const dom = new DOMParser();
+        const produitItems = `<article class="cart__item" data-id="${id}" data-color="${color}">
                             <div class="cart__item__img">
                                 <img src="${data.imageUrl}" alt="${data.altTxt}">
                             </div>
@@ -59,82 +56,92 @@ async function displayItem() {
                                 </div>
                             </div>
                         </article>`;
-              const cartItems = dom.parseFromString(produitItems, "text/html");
-                  item.appendChild(cartItems.body.firstChild);
-                // Afficher le prix total
-                    priceTotal += data.price * LS[i].qty;
-                    document.querySelector('#totalPrice').innerHTML = priceTotal;
+        const cartItems = dom.parseFromString(produitItems, "text/html");
+        item.appendChild(cartItems.body.firstChild);
+        // Afficher le prix total
+        priceTotal += data.price * LS[i].qty;
+        document.querySelector("#totalPrice").innerHTML = priceTotal;
 
-                    // Afficher la quantité totale
-                   quantityTotal += parseInt(LS[i].qty);
-                    document.querySelector('#totalQuantity').innerHTML = quantityTotal;
-                }
- }
- } else {
-        document.querySelector(`h1`).innerText = `Le panier est vide !`;
-        document.querySelector('#totalQuantity').innerText = `0`;
-        document.querySelector('#totalPrice').innerText = `0`;
+        // Afficher la quantité totale
+        quantityTotal += parseInt(LS[i].qty);
+        document.querySelector("#totalQuantity").innerHTML = quantityTotal;
+      }
     }
+  } else {
+    document.querySelector(`h1`).innerText = `Le panier est vide !`;
+    document.querySelector("#totalQuantity").innerText = `0`;
+    document.querySelector("#totalPrice").innerText = `0`;
   }
-  // Fonction pour changer la quantité
-const changeQty = (id, color, price, newQty) => {
-    let LS = addCart();
-    let item = LS.find(
-        (LS) =>
-            id === LS.id && color === LS.color
-    );
-    let oldQuantity= item.qty;
-    let qtyNew = parseInt(newQty);
-    item.qty= qtyNew;
-    localStorage.setItem('cart',JSON.stringify(LS));
-    let oldTotalQty=document.querySelector(`#totalQuantity`).innerHTML;
-    //erreur quantity  non compris entre 1 et 100
-    if (newQty<=0 || newQty >=101) {    alert(`la quantité d'un produit doit être comprise entre 1 et 100`)  }
-//modifier quantité total
-let newQtyTotal = oldTotalQty - oldQuantity +  qtyNew;
-document.querySelector(`#totalQuantity`).innerHTML = newQtyTotal;
-
- let priceProduit = parseInt(price);
- let oldTotalPrice = parseInt(document.querySelector(`#totalPrice`).innerHTML);
- let newTotalPrice = oldTotalPrice -(priceProduit *oldTotalQty) + (priceProduit* qtyNew);
- document.querySelector(`#totalPrice`).innerHTML = newTotalPrice;
 }
-function addQuantityToSettings(id,color,price) {
- const input = document.querySelector(`article[data-id="${id}"][data-color="${color}]`)
+// Fonction pour changer la quantité
+const changeQty = (id, color, price, newQty) => {
+  let LS = getCart();
+  let item = LS.find((LS) => id === LS.id && color === LS.color);
+
+  let oldQuantity = item.qty;
+  let qtyNew = parseInt(newQty);
+  item.qty = qtyNew;
+  localStorage.setItem("cart", JSON.stringify(LS));
+  let oldTotalQty = parseInt(
+    document.querySelector(`#totalQuantity`).innerHTML,
+  );
+  //erreur quantity  non compris entre 1 et 100
+  if (newQty <= 0 || newQty >= 101) {
+    alert(`la quantité d'un produit doit être comprise entre 1 et 100`);
+  }
+  //modifier quantité total
+  let newQtyTotal = oldTotalQty - oldQuantity + qtyNew;
+  document.querySelector(`#totalQuantity`).innerHTML = newQtyTotal;
+
+  let priceProduit = parseInt(price);
+  let oldTotalPrice = parseInt(document.querySelector(`#totalPrice`).innerHTML);
+  let newTotalPrice =
+    oldTotalPrice - priceProduit * oldQuantity + priceProduit * qtyNew;
+  document.querySelector(`#totalPrice`).innerHTML = newTotalPrice;
+};
+function addQuantityToSettings(id, color, price) {
+  const input = document.querySelector(
+    `article[data-id="${id}"][data-color="${color}]`,
+  );
   input.addEventListener("input", () =>
-   updatePriceAndQuantity(item.id, input.value, item,price)); 
+    updatePriceAndQuantity(item.id, input.value, item, price),
+  );
 }
 //suppression de produit //
-const deleteProduit = (id,color,price,qty) =>{
-  let LS =addCart();
+const deleteProduit = (id, color, price, qty) => {
+  let LS = getCart();
   for (let i = 0; i < LS.length; i++) {
-    if (id===LS[i].id&& color === LS[i].color) {
-      LS.splice(i,1);
-      localStorage.setItem('cart',JSON.stringify(LS));
+    if (id === LS[i].id && color === LS[i].color) {
+      LS.splice(i, 1);
+      localStorage.setItem("cart", JSON.stringify(LS));
 
-      let itemToDelete = document.querySelector(`.cart__item[data-id="${id}"][data-color="${color}"]`);
-       itemToDelete.setAttribute("style", "display:none");
+      let itemToDelete = document.querySelector(
+        `.cart__item[data-id="${id}"][data-color="${color}"]`,
+      );
+      itemToDelete.setAttribute("style", "display:none");
 
-       //modif qty localstorage
-       let deletQTY =qty;
-       localStorage.setItem('cart',JSON.stringify(LS));
-       //Modif qty total
-       let oldTotalQty =parseInt(document.querySelector(`#totalQuantity`).innerHTML);
-       let newQtyTotal = oldTotalQty -deletQTY;
-       document.querySelector(`#totalQuantity`).innerHTML = newQtyTotal;
+      //modif qty localstorage
+      let deletQTY = qty;
+      localStorage.setItem("cart", JSON.stringify(LS));
+      //Modif qty total
+      let oldTotalQty = parseInt(
+        document.querySelector(`#totalQuantity`).innerHTML,
+      );
+      let newQtyTotal = oldTotalQty - deletQTY;
+      document.querySelector(`#totalQuantity`).innerHTML = newQtyTotal;
 
-//modi prix total*
-        let priceProduit = parseInt(price);
-        let oldTotalPrice = parseInt(document.querySelector(`#totalPrice`).innerHTML);
-        let nexTotalPrice = oldTotalPrice - (priceProduit *deletQTY);
-        document.querySelector(`#totalPrice`).innerHTML = nexTotalPrice;
-        if (LS.length==0) {
-          document.querySelector('h1').innerText='Le panier est vide!!';
-          return alert('le panier est vide !!');
-          
-        }
+      //modi prix total*
+      let priceProduit = parseInt(price);
+      let oldTotalPrice = parseInt(
+        document.querySelector(`#totalPrice`).innerHTML,
+      );
+      let nexTotalPrice = oldTotalPrice - priceProduit * deletQTY;
+      document.querySelector(`#totalPrice`).innerHTML = nexTotalPrice;
+      if (LS.length == 0) {
+        document.querySelector("h1").innerText = "Le panier est vide!!";
+        return alert("le panier est vide !!");
       }
+    }
   }
-}
- displayItem()
-
+};
+displayItem();
