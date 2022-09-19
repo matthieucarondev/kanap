@@ -20,65 +20,42 @@ const emailRegEx = new RegExp("[a-z0-9]+@[a-z]+.[a-z]{2,3}");
 const validFirstName = function (inputFirstName) {
   let firstNameErrorMsg = document.querySelector("#firstNameErrorMsg");
 
-  if (regexNames.test(inputFirstName.value)) {
-    firstNameErrorMsg.innerText = ``;
-    return true;
-  } else {
-    firstNameErrorMsg.innerText = `Veuillez renseigner votre prénom (Les chiffres et les caractères spéciaux ne sont pas autorisés)`;
-    return false;
-  }
+  firstNameErrorMsg.innerText = regexNames.test(inputFirstName.value)
+    ? ""
+    : `Veuillez renseigner votre prénom (Les chiffres et les caractères spéciaux ne sont pas autorisés)`;
+  return regexNames.test(inputFirstName.value);
 };
 
 // Fonction pour validation du nom ou erreur
 const validLastName = function (inputLastName) {
   let lastNameErrorMsg = document.querySelector("#lastNameErrorMsg");
-
-  if (regexNames.test(inputLastName.value)) {
-    lastNameErrorMsg.innerText = ``;
-    return true;
-  } else {
-    lastNameErrorMsg.innerText = `Veuillez renseigner votre nom (Les chiffres et les caractères spéciaux ne sont pas autorisés)`;
-    return false;
-  }
+  lastNameErrorMsg.innerText = regexNames.test(inputLastName.value)? "" : `Veuillez renseigner votre nom (Les chiffres et les caractères spéciaux ne sont pas autorisés)`;
+  return regexNames.test(inputLastName.value);
 };
 
 // Fonction pour validation de l'adresse ou erreur
 const validAddress = function (inputAddress) {
   let addressErrorMsg = document.querySelector("#addressErrorMsg");
 
-  if (addressRegEx.test(inputAddress.value)) {
-    addressErrorMsg.innerText = ``;
-    return true;
-  } else {
-    addressErrorMsg.innerText = `Veuillez renseigner le numéro et le nom de votre adresse (Les caractères spéciaux ne sont pas autorisés)`;
-    return false;
-  }
+addressErrorMsg.innerText =addressRegEx.test(inputAddress.value)?"":`Veuillez renseigner le numéro et le nom de votre adresse (Les caractères spéciaux ne sont pas autorisés)`;
+return addressRegEx.test(inputAddress.value);
 };
 
 // Fonction pour validation de la ville ou erreur
 const validCity = function (inputCity) {
   let cityErrorMsg = document.querySelector("#cityErrorMsg");
 
-  if (addressRegEx.test(inputCity.value)) {
-    cityErrorMsg.innerText = ``;
-    return true;
-  } else {
-    cityErrorMsg.innerText = `Veuillez renseigner le code postal et le nom de votre ville (Les caractères spéciaux ne sont pas autorisés)`;
-    return false;
-  }
+ 
+cityErrorMsg.innerText = addressRegEx.test(inputCity.value) ? "":`Veuillez renseigner le code postal et le nom de votre ville (Les caractères spéciaux ne sont pas autorisés)`;
+  return addressRegEx.test(inputCity.value);
 };
 
 // Fonction pour validation de l'adresse ou erreur
 const validEmail = function (inputEmail) {
   let emailErrorMsg = document.querySelector("#emailErrorMsg");
 
-  if (emailRegEx.test(inputEmail.value)) {
-    emailErrorMsg.innerText = ``;
-    return true;
-  } else {
-    emailErrorMsg.innerText = `Veuillez renseigner votre adresse mail, elle doit contenir "@" et un point`;
-    return false;
-  }
+emailErrorMsg.innerText = emailRegEx.test(inputEmail.value)?"": `Veuillez renseigner votre adresse mail, elle doit contenir "@" et un point`;
+  return emailRegEx.test(inputEmail.value);
 };
 
 // Evenement d'ecoute de l'input prenom
@@ -126,15 +103,11 @@ const createObjectToSend = () => {
     email: mail.value,
   };
 
-  let LS = addCart();
+  let LS = getCart();
   let products = [];
 
   for (i = 0; i < LS.length; i++) {
-    if (products.find((e) => e == LS[i].id)) {
-      console.log("not found");
-    } else {
-      products.push(LS[i].id);
-    }
+    products.push(LS[i].id);
   }
 
   let sendToServ = JSON.stringify({ contact, products });
@@ -143,7 +116,7 @@ const createObjectToSend = () => {
 
 // Fonction d'envoie du formulaire
 const sendForm = () => {
-  let LS = addCart();
+  let LS = getCart();
 
   // Si la qty d'un élément est inférieur ou égal à 0 / supérieur ou égal à 101
   for (i = 0; i < LS.length; i++) {

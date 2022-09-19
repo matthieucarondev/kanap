@@ -1,4 +1,4 @@
-let cart = localStorage.getItem("cart");
+
 const url = "http://localhost:3000/api/products/";
 const getCart = () => {
   let LS = [];
@@ -13,7 +13,7 @@ async function displayItem() {
   let LS = getCart();
   let quantityTotal = 0;
   let priceTotal = 0;
-  if (cart != null) {
+  if (localStorage.getItem("cart") != null) {
     for (let i = 0; i < LS.length; i++) {
       const id = LS[i].id;
       const color = LS[i].color;
@@ -124,10 +124,10 @@ const deleteProduit = (id, color, price, qty) => {
       let deletQTY = qty;
       localStorage.setItem("cart", JSON.stringify(LS));
       //Modif qty total
-      let oldTotalQty = parseInt(
+      let OldTotalQty = parseInt(
         document.querySelector(`#totalQuantity`).innerHTML,
       );
-      let newQtyTotal = oldTotalQty - deletQTY;
+      let newQtyTotal = OldTotalQty - deletQTY;
       document.querySelector(`#totalQuantity`).innerHTML = newQtyTotal;
 
       //modi prix total*

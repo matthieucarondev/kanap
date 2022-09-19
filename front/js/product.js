@@ -32,24 +32,25 @@ fetch(urlApi).then((response) =>
 function colorValue() {
   let color = document.querySelector(`#colors`);
   return color.value;
-}
-
-const addToCartElement = (id, color, qty) => {
-  if (color == null || color === "" || qty == null || qty == 0 || qty > 100) {
-    return alert(
-      "Veuillez sélectionner une  couleur et une quantité compris entre 1 et 100",
-    );
-  }
-  //récupérer local storage
+}  
+//récupérer local storage
   //let LS = localStorage.getitem("cart");
-  const addCart = () => {
+  const getCart = () => {
     let LS = [];
     if (localStorage.getItem(`cart`) != null) {
       LS = JSON.parse(localStorage.getItem(`cart`));
     }
     return LS;
   };
-  let LS = addCart();
+const addToCartElement = (id, color, qty) => {
+  if (color == null || color === "" || qty == null || qty == 0 || qty > 100) {
+    return alert(
+      "Veuillez sélectionner une  couleur et une quantité compris entre 1 et 100",
+    );
+  }
+
+
+  let LS = getCart();
   // si le LS est vide alors.creer un nouveau table et push data dans le tableau
   if (LS.length == 0) {
     LS = [{ id: id, color: color, qty: qty }];
