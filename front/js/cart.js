@@ -51,7 +51,7 @@ async function displayItem() {
                                     </div>
                                 
                                     <div class="cart__item__content__settings__delete">
-                                        <p class="deleteProduit" onclick="deleteProduit('${id}', '${color}', '${data.price}','${LS[i].qty}')">Supprimer</p>
+                                        <p class="deleteProduit" onclick="deleteProduit('${id}', '${color}', '${data.price}')">Supprimer</p>
                                     </div>
                                 </div>
                             </div>
@@ -112,7 +112,8 @@ const deleteProduit = (id, color, price, qty) => {
   let LS = getCart();
   for (let i = 0; i < LS.length; i++) {
     if (id === LS[i].id && color === LS[i].color) {
-      LS.splice(i, 1);
+      let deletQTY =LS[i].qty;
+      LS.splice(i, 1);  
       localStorage.setItem("cart", JSON.stringify(LS));
 
       let itemToDelete = document.querySelector(
@@ -120,9 +121,9 @@ const deleteProduit = (id, color, price, qty) => {
       );
       itemToDelete.setAttribute("style", "display:none");
 
-      //modif qty localstorage
-      let deletQTY = qty;
-      localStorage.setItem("cart", JSON.stringify(LS));
+   
+   
+    
       //Modif qty total
       let OldTotalQty = parseInt(
         document.querySelector(`#totalQuantity`).innerHTML,
@@ -135,8 +136,8 @@ const deleteProduit = (id, color, price, qty) => {
       let oldTotalPrice = parseInt(
         document.querySelector(`#totalPrice`).innerHTML,
       );
-      let nexTotalPrice = oldTotalPrice - priceProduit * deletQTY;
-      document.querySelector(`#totalPrice`).innerHTML = nexTotalPrice;
+      let newTotalPrice = oldTotalPrice - priceProduit * deletQTY;
+      document.querySelector(`#totalPrice`).innerHTML = newTotalPrice;
       if (LS.length == 0) {
         document.querySelector("h1").innerText = "Le panier est vide!!";
         return alert("le panier est vide !!");
